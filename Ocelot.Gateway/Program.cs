@@ -34,7 +34,10 @@ builder.Configuration
 builder.Services.AddOcelot()
     .AddDelegatingHandler<RequestLogger>()
     .AddCacheManager(settings => settings.WithDictionaryHandle())
-    .AddCustomLoadBalancer<CustomLoadBalancer>();
+    .AddCustomLoadBalancer((serviceProvider, downstreamRoute, serviceDiscoveryProvider) =>
+    {
+        return new CustomLoadBalancer(serviceDiscoveryProvider.Get);
+    });
 
 var app = builder.Build();
 
